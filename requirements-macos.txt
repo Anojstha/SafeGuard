@@ -1,0 +1,4 @@
+cryptography>=43,<47
+paramiko>=3.5,<5
+pyinstaller>=6,<7
+pyinstaller-hooks-contrib>=2025.5
