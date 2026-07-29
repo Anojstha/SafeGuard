@@ -1,0 +1,52 @@
+name: Build macOS App & DMG
+
+on:
+  push:
+    branches:
+      - main
+      - master
+  workflow_dispatch: # Allows manual trigger from GitHub UI
+
+jobs:
+  build-macos:
+    runs-on: macos-latest
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install pyinstaller
+
+      - name: Build macOS .app Bundle
+        run: |
+          pyinstaller --windowed --onefile spp_support_bundle_Automation_macOS.py
+
+      - name: Install create-dmg
+        run: |
+          brew install create-dmg
+
+      - name: Generate .dmg Package
+        run: |
+          mkdir -p output
+          create-dmg \
+            --volname "SafeGuard Automation Installer" \
+            --window-pos 200 120 \
+            --window-size 800 400 \
+            --icon-size 100 \
+            --app-drop-link 600 185 \
+            "output/SafeGuard_Automation.dmg" \
+            "dist/spp_support_bundle_Automation_macOS.app"
+
+      - name: Upload DMG as GitHub Artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: SafeGuard-Automation-macOS-DMG
+          path: output/SafeGuard_Automation.dmg
