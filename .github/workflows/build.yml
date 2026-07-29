@@ -27,5 +27,5 @@ jobs:
       - name: Upload .app Bundle
         uses: actions/upload-artifact@v4
         with:
-          name: macOS-App-Bundle
+          name: SafeGuard-macOS-App
           path: dist/spp_support_bundle_Automation_macOS.app
